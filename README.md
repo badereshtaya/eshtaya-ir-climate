@@ -1,84 +1,93 @@
 # Eshtaya IR Climate
 
-A Home Assistant custom integration for Tuya-based infrared air-conditioner controllers.
+Home Assistant integration for Tuya-based IR air-conditioner thermostats/controllers.
 
-## Why v0.3.0 is different
+## v0.5.0 — no IR Control Hub subscription
 
-Tuya can expose the same device through several API families, and some products return a successful but empty **standard** specification even though the device has working original DPs. Eshtaya IR Climate therefore does not depend on one specification endpoint.
+Eshtaya IR Climate does **not** require `IR Control Hub Open Service`.
 
-It probes and merges several Tuya surfaces, including classic IoT-03, Smart Home APIs, live device status, IoT Core shadow properties, category metadata, and the Things Data Model. If Tuya still hides metadata for a manually selected controller, the integration uses a conservative compatibility profile rather than rejecting setup.
+The integration uses the same `ir_send` datapoint that Smart Life uses on compatible IR thermostats.
 
-The `hwktwkq` IR Air Thermostat / Smart Air Conditioner Controller family has a dedicated built-in profile.
+### How automatic learning works
+
+1. Use Smart Life normally.
+2. Smart Life sends an `ir_send` DP command containing the exact IR payload for the selected A/C state.
+3. Eshtaya IR Climate reads the regular IoT Core operation logs and saves that exact payload locally.
+4. The next time Home Assistant requests the same mode + temperature + fan state, the integration replays the learned `ir_send` payload through the normal device-control API.
+5. Device report logs are also read so physical thermostat changes can update Home Assistant even when the current-state endpoint is slow.
+
+No raw IR payloads from one user's A/C are bundled into the public integration.
+
+## Tuya services
+
+The design uses the normal project/device services already used by the integration, especially IoT Core APIs.
+
+It does **not** call `/v2.0/infrareds/...` endpoints.
+
+## Initial learning
+
+At startup the integration imports up to 100 `ir_send` commands from the previous 24 hours.
+
+You can also press:
+
+**Device → Button → Sync IR library**
+
+to immediately repeat the 24-hour import.
+
+The sensor:
+
+**Learned IR commands**
+
+shows how many exact commands are stored.
+
+## Climate attributes
+
+The main climate entity exposes useful diagnostics:
+
+- `learned_ir_commands`
+- `last_learned_ir_key`
+- `last_ir_key`
+- `last_ir_result`
+- `missing_ir_request`
+- `last_command_route`
+
+Typical successful control:
+
+```text
+last_ir_result: sent
+last_ir_key: M0_T25_S3
+last_command_route: ir_send:iot03
+```
+
+If a combination has not been learned yet:
+
+```text
+last_ir_result: missing_learned_command
+missing_ir_request: M0_T27_S3
+```
+
+Use that combination once in Smart Life and the integration will learn it automatically on the next learning cycle, or press **Sync IR library**.
 
 ## Installation
 
-Extract so this exists:
+Extract the install ZIP into `/config` so this exists:
 
 ```text
-/config/custom_components/eshtaya_ir_climate/
+/config/custom_components/eshtaya_ir_climate/manifest.json
 ```
 
-Restart Home Assistant, then:
+Restart Home Assistant.
 
-**Settings → Devices & services → Add Integration → Eshtaya IR Climate**
-
-Enter your Tuya Cloud:
-
-- Access ID / Client ID
-- Access Secret / Client Secret
-- Data Center
-
-If automatic discovery cannot identify your controller with high confidence, enter its Device ID manually. A hidden standard DP schema will no longer cause an "unsupported climate schema" rejection.
-
-## Bundled animated card
-
-Register this once under:
-
-**Settings → Dashboards → Resources**
-
-URL:
+For the bundled card, register:
 
 ```text
-/eshtaya_ir_climate/frontend/eshtaya-ir-climate-card.js?v=0.3.0
+/eshtaya_ir_climate/frontend/eshtaya-ir-climate-card.js?v=0.5.0
 ```
 
-Type:
-
-```text
-JavaScript Module
-```
-
-Then use:
-
-```yaml
-type: custom:eshtaya-ir-climate-card
-entity: climate.living_room_ac
-show_current_temperature: true
-show_humidity: true
-show_fan: true
-```
-
-## Diagnostics
-
-If a new Tuya model behaves differently:
-
-**Settings → Devices & services → Eshtaya IR Climate → Download diagnostics**
-
-Diagnostics include the selected compatibility profile, DP metadata, live status and which Tuya API surfaces returned data. Secrets, local keys and identifying network/account fields are redacted.
-
-## HACS
-
-The repository includes:
-
-- `custom_components/eshtaya_ir_climate/brand/icon.png`
-- HACS validation workflow
-- Hassfest workflow
-- `hacs.json`
-
-Repository:
-
-`badereshtaya/eshtaya-ir-climate`
+as a JavaScript Module.
 
 ## Security
 
-Never publish your Tuya Access Secret. It is stored in the Home Assistant config entry and redacted from diagnostics.
+Never publish your Tuya Access Secret.
+
+The integration does not hard-code a Device ID, virtual-device ID, `head`, or raw IR command from any specific user's air conditioner.
