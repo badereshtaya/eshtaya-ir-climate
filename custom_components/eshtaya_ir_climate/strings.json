@@ -1,0 +1,40 @@
+{
+  "title": "Eshtaya IR Climate",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect your Tuya Cloud project",
+        "description": "Enter the Tuya Cloud project credentials once. Eshtaya IR Climate will search for compatible IR air-conditioner controllers.",
+        "data": {
+          "access_id": "Access ID / Client ID",
+          "access_secret": "Access Secret / Client Secret",
+          "data_center": "Tuya Data Center"
+        }
+      },
+      "devices": {
+        "title": "Select IR air conditioners",
+        "description": "Only devices exposing a compatible IR climate datapoint schema are shown. You can select more than one device.",
+        "data": {
+          "device_ids": "Compatible devices"
+        }
+      },
+      "manual": {
+        "title": "Enter Device ID manually",
+        "description": "Tuya accepted your credentials but did not allow automatic device discovery, or no compatible device was found. Enter the Device ID of an IR A/C controller.",
+        "data": {
+          "manual_device_id": "Device ID"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to Tuya or access the requested device.",
+      "invalid_auth": "Invalid Tuya Cloud credentials, data center, or authorization.",
+      "not_supported": "This device does not expose a compatible IR climate control schema.",
+      "select_device": "Select at least one compatible device.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This Tuya Cloud project is already configured."
+    }
+  }
+}
