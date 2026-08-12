@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.1
+
+- Fixed Tuya `1004: sign invalid` on log queries.
+- Canonical query parameters are now sorted alphabetically before URL construction and HMAC signing, as required by Tuya Cloud authorization.
+- Comma-separated `codes` and log `type` values are preserved in the canonical URL.
+- `Sync IR library` no longer fails the Home Assistant button action if a secondary report-log query is unavailable.
+- Exact `ir_send` commands are still learned from operation logs even without report-log correlation.
+- Background and bootstrap learning now degrade gracefully when only one log surface is available.
+
 ## 0.5.0
 
 - Removed all dependency on **IR Control Hub Open Service**.

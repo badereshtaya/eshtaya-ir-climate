@@ -2,7 +2,7 @@
 
 Home Assistant integration for Tuya-based IR air-conditioner thermostats/controllers.
 
-## v0.5.0 — no IR Control Hub subscription
+## v0.5.1 — no IR Control Hub subscription
 
 Eshtaya IR Climate does **not** require `IR Control Hub Open Service`.
 
@@ -91,3 +91,11 @@ as a JavaScript Module.
 Never publish your Tuya Access Secret.
 
 The integration does not hard-code a Device ID, virtual-device ID, `head`, or raw IR command from any specific user's air conditioner.
+
+
+## 0.5.1 signing fix
+
+Tuya requires query parameters to be sorted alphabetically before the URL is
+included in `stringToSign`. Earlier builds worked for requests without query
+parameters but could return `1004: sign invalid` for operation/report log
+queries. v0.5.1 canonicalizes the query before both signing and sending it.

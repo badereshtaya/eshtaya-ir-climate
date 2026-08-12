@@ -1,0 +1,17 @@
+{
+  "domain": "eshtaya_ir_climate",
+  "name": "Eshtaya IR Climate",
+  "version": "0.5.1",
+  "config_flow": true,
+  "documentation": "https://github.com/badereshtaya/eshtaya-ir-climate",
+  "issue_tracker": "https://github.com/badereshtaya/eshtaya-ir-climate/issues",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "dependencies": [
+    "http"
+  ],
+  "codeowners": [
+    "@badereshtaya"
+  ]
+}
