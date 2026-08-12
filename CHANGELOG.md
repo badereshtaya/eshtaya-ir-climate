@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+- Fixed the Tuya instruction-set endpoint to the documented `/v1.0/iot-03/devices/{device_id}/functions`.
+- Added category instruction-set fallback.
+- Added a verified DP-Instruction profile fallback for IR Air Thermostat devices exposing `infrared_switch`, `target_temp`, `mode`, and `fan_level` in live status.
+- Manual Device ID validation and runtime setup now both use the same capability enrichment path.
+
 ## 0.2.1
 - Fixed Tuya products configured in **DP Instruction** mode being incorrectly rejected as unsupported.
 - Do not treat a successful-but-empty v1.2 standard specification as authoritative.

@@ -4,7 +4,7 @@
 
 It dynamically reads each device's Tuya datapoint specification instead of hard-coding one Product ID, and it includes an animated custom dashboard card.
 
-## v0.2.1
+## v0.2.2
 
 ### Integration
 
@@ -13,7 +13,8 @@ It dynamically reads each device's Tuya datapoint specification instead of hard-
 - Checks the Tuya specification and only offers compatible IR climate devices.
 - Select one or multiple compatible A/C controllers.
 - Manual Device ID fallback if Tuya does not permit discovery.
-- DP Instruction mode fallback: if Tuya's standard v1.2 specification is empty, the integration retries the effective per-device specification and function APIs.
+- DP Instruction mode fallback: uses Tuya's documented `/v1.0/iot-03/devices/{device_id}/functions` endpoint when the standard specification is empty.
+- Verified IR Air Thermostat fallback: if Tuya hides function metadata but live status exposes `infrared_switch`, `target_temp`, `mode`, and `fan_level`, the integration safely reconstructs the known schema used by this controller family.
 - Dynamic climate capability mapping.
 - Cloud polling every 30 seconds.
 - Diagnostics for sharing unknown DP schemas without exposing the Tuya Access Secret.
@@ -97,7 +98,7 @@ Register it once in:
 URL:
 
 ```text
-/eshtaya_ir_climate/frontend/eshtaya-ir-climate-card.js?v=0.2.1
+/eshtaya_ir_climate/frontend/eshtaya-ir-climate-card.js?v=0.2.2
 ```
 
 Resource type:
